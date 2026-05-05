@@ -1,18 +1,26 @@
 "use client";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Later: This is where you'll verify credentials against your .NET backend
-    console.log("Attempting login for:", email);
-    router.push('/dashboard'); 
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+
+    if (error) {
+      alert(error.message);
+    } else {
+      router.push('/dashboard');
+    }
   };
 
   return (
@@ -24,7 +32,7 @@ export default function LoginPage() {
         <div className="p-8">
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-gray-900">Welcome Back</h1>
-            <p className="text-sm text-gray-500 mt-1">Login to manage DHL incidents</p>
+            <p className="text-sm text-gray-500 mt-1">Authorized personnel login only</p>
           </div>
 
           <form className="space-y-6" onSubmit={handleLogin}>
@@ -61,11 +69,9 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p className="text-center text-sm text-gray-600 mt-8">
-            New to the portal?{' '}
-            <Link href="/signup" className="text-[#D40511] font-bold hover:underline">
-              Create an account
-            </Link>
+          <p className="text-center text-xs text-gray-500 mt-8">
+            Access is restricted. If you do not have an account, <br />
+            please contact your system administrator.
           </p>
         </div>
       </div>

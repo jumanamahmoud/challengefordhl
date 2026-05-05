@@ -15,31 +15,36 @@ export default function SignUpPage() {
   
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+ const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  if (formData.password !== formData.confirmPassword) {
-    alert("Passwords do not match!");
-    return;
-  }
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
 
-  const { data, error } = await supabase.auth.signUp({
-    email: formData.email,
-    password: formData.password,
-    options: {
-      data: {
-        full_name: formData.fullName,
+    // 1. Sign up the user
+    const { data, error } = await supabase.auth.signUp({
+      email: formData.email,
+      password: formData.password,
+      options: {
+        data: { full_name: formData.fullName },
       },
-    },
-  });
+    });
 
-  if (error) {
-    alert(error.message);
-  } else {
-    alert("Sign up successful! You can now log in.");
-    router.push('/login');
-  }
-};
+    if (error) {
+      alert("Sign up error: " + error.message);
+    } else {
+      // 2. SUCCESS! The user is now automatically logged in (if email confirmation is off)
+      // Check if session exists to be safe
+      if (data.session) {
+        router.push('/dashboard'); 
+      } else {
+        // This usually happens if you have "Email Confirmation" turned ON
+        alert("Success! Please check your email to confirm your account.");
+      }
+    }
+  };
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12">
