@@ -9,8 +9,16 @@ export default function FileUploadModal({ onClose }: { onClose: () => void }) {
 
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user: currentUser } } = await supabase.auth.getUser();
-      setUser(currentUser);
+      try {
+        const { data: { user: currentUser }, error } = await supabase.auth.getUser();
+        if (error) {
+          console.warn('Supabase getUser error:', error.message);
+          return;
+        }
+        setUser(currentUser);
+      } catch (err) {
+        console.warn('Supabase getUser failure:', err);
+      }
     };
     getUser();
   }, []);

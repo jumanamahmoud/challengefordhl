@@ -12,8 +12,19 @@ export default function Navbar() {
   useEffect(() => {
     // 1. Get initial session
     const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user || null);
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.warn('Supabase auth session error:', error.message);
+          await supabase.auth.signOut();
+          setUser(null);
+          return;
+        }
+        setUser(session?.user || null);
+      } catch (err) {
+        console.warn('Supabase auth session failure:', err);
+        setUser(null);
+      }
     };
     getSession();
 
