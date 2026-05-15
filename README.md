@@ -5,30 +5,6 @@ A resilient, full-stack incident management pipeline combining UiPath RPA for da
 Demo Video Link: https://drive.google.com/drive/folders/11O5cVxNCGGTi2Zn4Gd3MwassLLn7DQpi?usp=drive_link 
 
 <h2>🚀 System Architecture</h2>
-<div>
-  ┌─────────────────────────────────────────────────────────────┐
-│  Next.js Frontend (Vercel/Local)                            │
-│  ├─ Dashboard (Real-time Supabase Sync)                     │
-│  ├─ Incident Details (RegEx Output + Raw Text)              │
-│  └─ Status Management (Draft → Reviewed → Completed)        │
-└────────────────────┬────────────────────────────────────────┘
-                     │  Real-time Subscription / REST
-                     ▼
-┌─────────────────────────────────────────────────────────────┐
-│  Cloud Layer (Supabase)                                     │
-│  ├─ PostgreSQL Database (Incidents Table)                    │
-│  ├─ Row Level Security (RLS)                                 │
-│  └─ Auth & API Gateway                                      │
-└────────────────────┬────────────────────────────────────────┘
-                     │  HTTPS (REST API)
-                     ▼
-┌─────────────────────────────────────────────────────────────┐
-│  RPA Worker (UiPath)                                        │
-│  ├─ Google Drive Polling                                    │
-│  ├─ Waterfall RegEx Extraction                              │
-│  └─ Deduplication Logic (drive_id check)                    │
-└─────────────────────────────────────────────────────────────┘
-</div>
 
 
 <h2> 📂 Project Structure </h2>
